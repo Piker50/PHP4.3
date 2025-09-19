@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Check if user is logged in
+//check user
 if (!isset($_SESSION['user'])) {
     header("Location: index.php");
     exit();
@@ -9,7 +9,6 @@ if (!isset($_SESSION['user'])) {
 
 $user = $_SESSION['user'];
 
-// Check GET parameter
 if (!isset($_GET['user']) || $_GET['user'] != $user['id']) {
     die("Invalid user profile.");
 }
@@ -37,21 +36,17 @@ if (!isset($_GET['user']) || $_GET['user'] != $user['id']) {
         }
         .card {
             border-top: 5px solid #0071ce;
+            max-width: 600px;
+            margin: auto;
         }
     </style>
 </head>
 <body>
 
-<!-- ✅ Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
   <div class="container-fluid">
-    <a class="navbar-brand fw-bold text-white" href="#">MyLabApp</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-            data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
-            aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <a class="navbar-brand fw-bold text-white" href="#">PHP</a>
+    <div class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
           <a class="nav-link" href="index.php">Login</a>
@@ -64,12 +59,12 @@ if (!isset($_GET['user']) || $_GET['user'] != $user['id']) {
   </div>
 </nav>
 
-<!-- ✅ Profile Card -->
 <div class="container mt-5">
     <div class="card shadow p-4">
         <h2>Welcome, <?= htmlspecialchars($user['name']) ?>!</h2>
         <p><strong>Email:</strong> <?= htmlspecialchars($user['email']) ?></p>
-        <p><strong>User ID (via GET):</strong> <?= $_GET['user'] ?></p>
+        <p><strong>Year Level:</strong> <?= htmlspecialchars($user['year']) ?></p>
+        <p><strong>User ID (via GET, check URL):</strong> <?= $_GET['user'] ?></p>
 
         <a href="index.php" class="btn btn-secondary mt-3">Logout</a>
     </div>

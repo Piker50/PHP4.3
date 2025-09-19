@@ -1,30 +1,68 @@
 <?php
 session_start();
 
-// Fake user for demo
-$validEmail = "user@example.com";
-$validPassword = "12345";
+$users = [
+    [
+        "id" => 1,
+        "email" => "lanz@test.com",
+        "password" => "12345",
+        "name" => "Lanz",
+        "year" => "4th Year"
+    ],
+    [
+        "id" => 2,
+        "email" => "toffee@test.com",
+        "password" => "12345",
+        "name" => "Toffee",
+        "year" => "1st Year"
+    ],
+    [
+        "id" => 3,
+        "email" => "mugi@test.com",
+        "password" => "qwerty",
+        "name" => "Mugi",
+        "year" => "4th Year"
+    ],
+    [
+        "id" => 4,
+        "email" => "snow@test.com",
+        "password" => "asdfg",
+        "name" => "Snow",
+        "year" => "4th Year"
+    ],
+    [
+        "id" => 5,
+        "email" => "mochi@test.com",
+        "password" => "zxcvb",
+        "name" => "Mochi",
+        "year" => "3rd Year"
+    ],
+];
+
 
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
-    if ($email === $validEmail && $password === $validPassword) {
-        // Store in SESSION
-        $_SESSION['user'] = [
-            "id" => 1,
-            "email" => $email,
-            "name" => "John Doe"
-        ];
-        // Redirect to profile.php with GET
-        header("Location: profile.php?user=1");
+    $foundUser = null;
+    foreach ($users as $u) {
+        if ($u['email'] === $email && $u['password'] === $password) {
+            $foundUser = $u;
+            break;
+        }
+    }
+
+    if ($foundUser) {
+        $_SESSION['user'] = $foundUser;
+        header("Location: profile.php?user=" . $foundUser['id']);
         exit();
     } else {
-        $error = "Invalid email or password.";
+        $error = "Invalid email or password!";
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -35,6 +73,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <style>
         body {
             background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .navbar-custom {
             background-color: #0071ce;
@@ -48,63 +90,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         .card {
             border-top: 5px solid #ffc220;
+            width: 100%;
+            max-width: 380px;
         }
     </style>
 </head>
 <body>
 
-<!-- ✅ Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand fw-bold text-white" href="#">MyLabApp</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-            data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
-            aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item">
-          <a class="nav-link active" href="index.php">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="profile.php?user=1">Profile</a>
-        </li>
-      </ul>
-    </div>
+    <a class="navbar-brand fw-bold text-white" href="#">PHP</a>
   </div>
 </nav>
 
-<!-- ✅ Login Card -->
-<div class="container mt-5">
-    <div class="card shadow p-4">
-        <h2 class="mb-3">Login</h2>
+<div class="card shadow p-4">
+    <h3 class="mb-3 text-center">Login</h3>
 
-        <?php if ($error): ?>
-            <div class="alert alert-danger"><?= $error ?></div>
-        <?php endif; ?>
+    <?php if ($error): ?>
+        <div class="alert alert-danger"><?= $error ?></div>
+    <?php endif; ?>
 
-        <form method="POST" action="" class="needs-validation" novalidate>
-            <div class="mb-3">
-                <label>Email</label>
-                <input type="email" name="email" class="form-control" required>
-                <div class="invalid-feedback">Please enter a valid email.</div>
-            </div>
+    <form method="POST" action="" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" required>
+            <div class="invalid-feedback">Please enter a valid email.</div>
+        </div>
 
-            <div class="mb-3">
-                <label>Password</label>
-                <input type="password" name="password" class="form-control" required minlength="5">
-                <div class="invalid-feedback">Password must be at least 5 characters.</div>
-            </div>
+        <div class="mb-3">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" required minlength="5">
+            <div class="invalid-feedback">Password must be at least 5 characters.</div>
+        </div>
 
-            <button type="submit" class="btn btn-primary w-100">Login</button>
-        </form>
-    </div>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// ✅ Bootstrap validation
+// Validation
 (() => {
   'use strict'
   const forms = document.querySelectorAll('.needs-validation')
